@@ -1,6 +1,6 @@
 # ISP
 
-Put checkpoints at `./checkpoints`.
+Download checkpoints from [here](https://drive.google.com/file/d/1Zhr93ejWGobqDnJjE-P95ssNTDYSFNXS/view?usp=sharing), and put `*.pth` at `./checkpoints`.
 
 For layering inference:
 ```
