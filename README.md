@@ -8,16 +8,30 @@ Download checkpoints from [here](https://drive.google.com/file/d/1Zhr93ejWGobqDn
 
 Download and extract the SMPL model from http://smplify.is.tue.mpg.de/ and place `basicModel_f_lbs_10_207_0_v1.0.0.pkl` in the folder of `./smpl_pytorch`.
 
-## Layering
+The code is implemented with python 3.6 and torch 1.9.0+cu102 (other versions may also work).
+
+Other dependencies include `trimesh`, `pytorch3D`, `scipy`.
+
+## Inference
+For garment generation:
+```
+python infer_isp.py
+```
+
 For layering inference:
 ```
 python infer_layering.py
 ```
 
 ## Fitting
-For fitting garment in rest pose (no layering involved):
+For fitting ISP to 3D garment mesh in rest pose:
 ```
 python fitting_3D_mesh.py --which skirt --save_path tmp --save_name skirt-fit --res 256
+```
+
+For fitting ISP to images:
+```
+python fitting_image.py --which skirt --save_path tmp --save_name skirt-fit --res 256
 ```
 
 ## Citation
