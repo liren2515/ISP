@@ -193,7 +193,6 @@ packed_body = [verts_body.squeeze(), torch.LongTensor(smpl_server.faces.astype(i
 best_i = retrieve_cloth(model_sdf_f, model_sdf_b, model_atlas_f, model_atlas_b, latent_codes, uv_vertices, uv_faces, edges, mesh_uv_200, renderer_textured, images_gt, diag_max, y_center, pose, beta, model_diffusion, model_draping, packed_input_smpl, packed_body, rotate_mat, save_folder, cloth_type=1)
 print(best_i)
 
-#best_i = 62
 fitting(best_i, model_sdf_f, model_sdf_b, model_atlas_f, model_atlas_b, latent_codes, uv_vertices, uv_faces, edges, mesh_uv_200, renderer_textured, images_gt, diag_max, y_center, pose, beta, model_diffusion, model_draping, packed_input_smpl, packed_body, rotate_mat, body, save_folder, cloth_type=1, thresh=-5e-2)
 
 ############# fitting tee #############
@@ -204,7 +203,6 @@ packed_top = prepare_draping_top(latent_code_top, model_sdf_f, model_sdf_b, mode
 best_i = retrieve_cloth_layering(model_sdf_f, model_sdf_b, model_atlas_f, model_atlas_b, latent_codes, uv_vertices, uv_faces, edges, mesh_uv_200, renderer_textured, images_gt, diag_max, y_center, pose, beta, model_diffusion, model_draping, model_layer, packed_input_smpl, packed_body, packed_top, rotate_mat, body, deformed_cloth, save_folder, cloth_type=0, is_pants=False)
 print(best_i)
 
-best_i = 29
 fitting_layering(best_i, model_sdf_f, model_sdf_b, model_atlas_f, model_atlas_b, latent_codes, uv_vertices, uv_faces, edges, mesh_uv_200, renderer_textured, images_gt, diag_max, y_center, pose, beta, model_diffusion, model_draping, model_layer, packed_input_smpl, packed_body, packed_top, rotate_mat, body, deformed_cloth, save_folder, cloth_type=0, is_pants=False)
 
 
@@ -216,7 +214,6 @@ packed_top = prepare_draping_top(latent_code_top, model_sdf_f, model_sdf_b, mode
 best_i = retrieve_cloth_layering(model_sdf_f_bottom, model_sdf_b_bottom, model_atlas_f_bottom, model_atlas_b_bottom, latent_codes_bottom, uv_vertices, uv_faces, edges, mesh_uv_200, renderer_textured, images_gt, diag_max_bottom, y_center_bottom, pose, beta, model_diffusion_TA, model_draping_bottom, model_layer, packed_input_smpl, packed_body, packed_top, rotate_mat, body, deformed_cloth, save_folder, cloth_type=2, is_pants=True, Rot_rest=Rot_rest, pose_offsets_rest=pose_offsets_rest)
 print(best_i)
 
-#best_i = 2
 fitting_layering(best_i, model_sdf_f_bottom, model_sdf_b_bottom, model_atlas_f_bottom, model_atlas_b_bottom, latent_codes_bottom, uv_vertices, uv_faces, edges, mesh_uv_200, renderer_textured, images_gt, diag_max_bottom, y_center_bottom, pose, beta, model_diffusion_TA, model_draping_bottom, model_layer, packed_input_smpl, packed_body, packed_top, rotate_mat, body, deformed_cloth, save_folder, cloth_type=2, is_pants=True, Rot_rest=Rot_rest, pose_offsets_rest=pose_offsets_rest)
 
 
