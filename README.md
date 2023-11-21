@@ -15,7 +15,7 @@ Other dependencies include `trimesh`, `pytorch3D`, `scipy`.
 ## Inference
 For garment generation:
 ```
-python infer_isp.py
+python infer_isp.py --which tee/pants/skirt --save_path tmp --save_name skirt --res 256 --idx_G 0
 ```
 
 For layering inference:
@@ -26,7 +26,7 @@ python infer_layering.py
 ## Fitting
 For fitting ISP to 3D garment mesh in rest pose:
 ```
-python fitting_3D_mesh.py --which skirt --save_path tmp --save_name skirt-fit --res 256
+python fitting_3D_mesh.py --which tee/pants/skirt --save_path tmp --save_name skirt-fit --res 256
 ```
 
 For fitting ISP to images:
