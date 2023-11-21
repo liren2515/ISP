@@ -461,3 +461,71 @@ class SMPL(nn.Module):
                              shape_offsets=shape_offsets)
 
         return output
+
+    def forward_verts(self, betas=None, body_pose=None, global_orient=None,
+                transl=None, return_verts=True, return_full_pose=False,displacement=None,v_template=None, rectify_root=False,
+                **kwargs):
+        ''' Forward pass for the SMPL model
+
+            Parameters
+            ----------
+            global_orient: torch.tensor, optional, shape Bx3
+                If given, ignore the member variable and use it as the global
+                rotation of the body. Useful if someone wishes to predicts this
+                with an external model. (default=None)
+            betas: torch.tensor, optional, shape Bx10
+                If given, ignore the member variable `betas` and use it
+                instead. For example, it can used if shape parameters
+                `betas` are predicted from some external model.
+                (default=None)
+            body_pose: torch.tensor, optional, shape Bx(J*3)
+                If given, ignore the member variable `body_pose` and use it
+                instead. For example, it can used if someone predicts the
+                pose of the body joints are predicted from some external model.
+                It should be a tensor that contains joint rotations in
+                axis-angle format. (default=None)
+            transl: torch.tensor, optional, shape Bx3
+                If given, ignore the member variable `transl` and use it
+                instead. For example, it can used if the translation
+                `transl` is predicted from some external model.
+                (default=None)
+            return_verts: bool, optional
+                Return the vertices. (default=True)
+            return_full_pose: bool, optional
+                Returns the full axis-angle pose vector (default=False)
+
+            Returns
+            -------
+        '''
+        # If no shape and pose parameters are passed along, then use the
+        # ones from the module
+        global_orient = (global_orient if global_orient is not None else
+                         self.global_orient)
+        body_pose = body_pose if body_pose is not None else self.body_pose
+        betas = betas if betas is not None else self.betas
+
+        apply_trans = transl is not None or hasattr(self, 'transl')
+        if transl is None and hasattr(self, 'transl'):
+            transl = self.transl
+
+        full_pose = torch.cat([global_orient, body_pose], dim=1)
+
+        # if betas.shape[0] != self.batch_size:
+        #     num_repeats = int(self.batch_size / betas.shape[0])
+        #     betas = betas.expand(num_repeats, -1)
+
+        if v_template is None:
+            v_template = self.v_template
+
+        if displacement is not None:
+            vertices, joints_smpl, T_weighted, W, T = lbs(betas, full_pose, v_template+displacement,
+                                   self.shapedirs, self.posedirs,
+                                   self.J_regressor, self.parents,
+                                   self.lbs_weights, dtype=self.dtype,pose_blend=self.pose_blend, rectify_root=rectify_root)
+        else:
+            vertices, joints_smpl, T_weighted, W, T = lbs(betas, full_pose, v_template,
+                                        self.shapedirs, self.posedirs,
+                                        self.J_regressor, self.parents,
+                                        self.lbs_weights, dtype=self.dtype,pose_blend=self.pose_blend, rectify_root=rectify_root)
+
+        return vertices, joints_smpl, T_weighted, W, T

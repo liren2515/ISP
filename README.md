@@ -6,9 +6,9 @@ This is the repo for [**ISP: Multi-Layered Garment Draping with Implicit Sewing 
 ## Setup:
 Download checkpoints from [here](https://drive.google.com/file/d/1Zhr93ejWGobqDnJjE-P95ssNTDYSFNXS/view?usp=sharing), and put `*.pth` at `./checkpoints`.
 
-Download and extract the SMPL model from http://smplify.is.tue.mpg.de/ and place `basicModel_f_lbs_10_207_0_v1.0.0.pkl` in the folder of `./smpl_pytorch`.
+Download and extract the SMPL model from http://smplify.is.tue.mpg.de/, and place `basicModel_f_lbs_10_207_0_v1.0.0.pkl` and `basicModel_neutral_lbs_10_207_0_v1.0.0.pkl` in the folder of `./smpl_pytorch`.
 
-The code is implemented with python 3.6 and torch 1.9.0+cu102 (other versions may also work).
+The code is implemented with python 3.8, torch 2.0.1 and cuda 11.8 (other versions usually work as well).
 
 Other dependencies include `trimesh`, `pytorch3D`, `scipy`.
 

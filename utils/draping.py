@@ -207,3 +207,55 @@ def draping(packed_input, pose, beta, model_diffusion, model_draping, uv_faces, 
     garment_faces = torch.LongTensor(np.concatenate((faces_garment_f, num_v_f+faces_garment_b), axis=0)).unsqueeze(0)
     
     return garment_skinning_f, garment_skinning_b, garment_skinning, garment_faces
+
+
+def draping_grad(packed_input, pose, beta, model_diffusion, model_draping, uv_faces, packed_input_smpl, is_pants=False, Rot_rest=None, pose_offsets_rest=None):
+    # vertices_garment_T - (#P, 3) 
+    vertices_garment_T_f, vertices_garment_T_b, faces_garment_f, faces_garment_b, barycentric_uv_f, barycentric_uv_b, closest_face_idx_uv_f, closest_face_idx_uv_b, fix_mask, latent_code = packed_input
+    with torch.no_grad():
+        num_v_f = len(vertices_garment_T_f)
+        num_v_b = len(vertices_garment_T_b)
+        barycentric_uv_batch_f = barycentric_uv_f.unsqueeze(0)
+        barycentric_uv_batch_b = barycentric_uv_b.unsqueeze(0)
+        closest_face_idx_uv_batch_f = closest_face_idx_uv_f.unsqueeze(0)
+        closest_face_idx_uv_batch_b = closest_face_idx_uv_b.unsqueeze(0)
+
+        fix_mask = fix_mask.unsqueeze(0)
+    
+        pose = pose.unsqueeze(0)
+        beta = beta.unsqueeze(0)
+        latent_code = latent_code.unsqueeze(0)
+
+        points = torch.cat((vertices_garment_T_f, vertices_garment_T_b), dim=0)
+        
+        w_smpl, tfs, pose_offsets, shape_offsets = packed_input_smpl
+        weight_points = model_diffusion(points*10)
+        weight_points = F.softmax(weight_points, dim=-1)
+        weight_points = weight_points.reshape(1, -1, 6890)
+
+    if is_pants:
+        garment_skinning_init = skinning_init_pants(points.unsqueeze(0), w_smpl, tfs, pose_offsets, shape_offsets, weight_points, Rot_rest, pose_offsets_rest)
+    else:
+        garment_skinning_init = skinning_init(points.unsqueeze(0), w_smpl, tfs, pose_offsets, shape_offsets, weight_points)
+        
+    with torch.no_grad():
+        smpl_param = torch.cat((pose, beta, latent_code), dim=-1)
+        pattern_deform_f, pattern_deform_b = model_draping(smpl_param)
+        pattern_deform_f = pattern_deform_f * fix_mask[:, None]
+        pattern_deform_b = pattern_deform_b * fix_mask[:, None]
+
+
+        pattern_deform_f = pattern_deform_f.reshape(1, 3, -1).permute(0,2,1)
+        pattern_deform_b = pattern_deform_b.reshape(1, 3, -1).permute(0,2,1)
+        pattern_deform_bary_f = uv_to_3D(pattern_deform_f, barycentric_uv_batch_f, closest_face_idx_uv_batch_f, uv_faces)
+        pattern_deform_bary_b = uv_to_3D(pattern_deform_b, barycentric_uv_batch_b, closest_face_idx_uv_batch_b, uv_faces)
+
+    garment_skinning_init[:, :num_v_f] += pattern_deform_bary_f
+    garment_skinning_init[:, num_v_f:] += pattern_deform_bary_b
+    garment_skinning = garment_skinning_init
+
+    garment_skinning_f = garment_skinning[:, :num_v_f]
+    garment_skinning_b = garment_skinning[:, num_v_f:]
+    garment_faces = torch.LongTensor(np.concatenate((faces_garment_f, num_v_f+faces_garment_b), axis=0)).unsqueeze(0)
+    
+    return garment_skinning_f, garment_skinning_b, garment_skinning, garment_faces

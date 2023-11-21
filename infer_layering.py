@@ -175,13 +175,6 @@ for i in range(len(idx_list)):
 
         mesh_sewing, mesh_atlas_f, mesh_atlas_b, mesh_pattern_f, mesh_pattern_b = reconstruct_batch(model_sdf_f_bottom, model_sdf_b_bottom, model_atlas_f_bottom, model_atlas_b_bottom, latent_code, uv_vertices, uv_faces, edges, resolution=x_res, which=which)
 
-        mesh_sewing.export('tmp/mesh_sewing.obj') 
-        mesh_atlas_f.export('tmp/mesh_atlas_f.obj') 
-        mesh_atlas_b.export('tmp/mesh_atlas_b.obj') 
-        mesh_pattern_f.export('tmp/mesh_pattern_f.obj') 
-        mesh_pattern_b.export('tmp/mesh_pattern_b.obj') 
-        #sys.exit()
-
         fix_mask = generate_fix_mask_bottom(mesh_pattern_f, mesh_pattern_b, mesh_uv_200)
 
     else:
@@ -251,7 +244,7 @@ for i in range(len(idx_list)):
         print('Layering ', i, j)
         
         
-        garment_layer_f_j, garment_layer_b_j = draping_layer(packed_input[i], packed_input[j], packed_input_atlas[j], packed_skinning[i], packed_skinning[j], pose, beta, model_diffusion, model_draping, model_layer, uv_faces_cuda, smpl_server, deformed_cloth, body=smpl_body, is_bottom=is_bottom)
+        garment_layer_f_j, garment_layer_b_j = draping_layer(packed_input[i], packed_input[j], packed_input_atlas[j], packed_skinning[i], packed_skinning[j], pose, beta, model_diffusion, model_draping, model_layer, uv_faces_cuda, deformed_cloth, body=smpl_body, is_bottom=is_bottom)
 
         garment_skinning_f_j = garment_layer_f_j
         garment_skinning_b_j = garment_layer_b_j

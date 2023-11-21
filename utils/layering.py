@@ -73,7 +73,7 @@ def compute_force(garment_skinning_init, verts_cloth_closest, normals_cloth_clos
 
 
 
-def draping_layer(packed_input_u, packed_input_o, packed_input_atlas_o, packed_skinning_u, packed_skinning_o, pose, beta, model_diffusion, model_draping, model_layer, uv_faces, smpl_server, deformed_cloth, body=None, is_bottom=False):
+def draping_layer(packed_input_u, packed_input_o, packed_input_atlas_o, packed_skinning_u, packed_skinning_o, pose, beta, model_diffusion, model_draping, model_layer, uv_faces, deformed_cloth, body=None, is_bottom=False):
     # vertices_garment_T - (#P, 3) 
     with torch.no_grad():
 
@@ -140,3 +140,4 @@ def draping_layer(packed_input_u, packed_input_o, packed_input_atlas_o, packed_s
         garment_layer_b_o = garment_skinning_b_o + pattern_deform_bary_b
 
     return garment_layer_f_o.detach(), garment_layer_b_o.detach()
+
