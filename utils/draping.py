@@ -20,7 +20,9 @@ def transform_pose(pose):
     pose = torch.FloatTensor(pose).cuda()
 
     return pose, rotate_original, rotate_zero_inv
-
+    
+'''
+#### old ####
 def search_border_y(mask, x):
     mask_y = mask[x]
     y_l = 0
@@ -33,6 +35,31 @@ def search_border_y(mask, x):
                 y_l = i-1
             elif flip == 3:
                 y_r = i
+    if flip != 4:
+        raise ValueError('Somthing Wrong!!!!')
+    return y_l, y_r
+'''
+
+def search_border_y(mask, x):
+    x_tmp = x
+    
+    while 1:
+        mask_y = mask[x_tmp]
+        y_l = 0
+        y_r = 0
+        flip = 0
+        for i in range(1,len(mask_y)):
+            if mask_y[i] != mask_y[i-1]:
+                flip += 1
+                if flip == 2:
+                    y_l = i-1
+                elif flip == 3:
+                    y_r = i
+        if flip != 4:
+            x_tmp += 1
+        else:
+            break
+            
     if flip != 4:
         raise ValueError('Somthing Wrong!!!!')
     return y_l, y_r
