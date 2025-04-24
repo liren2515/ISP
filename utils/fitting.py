@@ -181,7 +181,7 @@ def fit_neutral2female(pose, shape, smpl_server, smpl_server_n, lr=0.01, iters=1
                                         global_orient=pose[:, :3],
                                         return_verts=True,
                                         return_full_pose=True,
-                                        v_template=smpl_server.v_template)
+                                        v_template=smpl_server_n.v_template)
                                         
 
     pose.requires_grad = True
